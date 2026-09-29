@@ -20,36 +20,36 @@
 
 ```mermaid
 flowchart TD
-    subgraph 入口層 (Entry Layer)
-        AA[App Admin<br/>知識庫建設後台]
-        QA[QA Admin<br/>問答系統後台]
-        MCP[MCP Server<br/>MCP 工具服務]
+    subgraph entry_layer ["入口層 (Entry Layer)"]
+        AA["App Admin<br/>知識庫建設後台"]
+        QA["QA Admin<br/>問答系統後台"]
+        MCP["MCP Server<br/>MCP 工具服務"]
     end
 
-    subgraph 基礎設施層 (Infrastructure)
-        TF[ToolFactory<br/>三級工具工廠]
-        MF[ModelFactory<br/>模型與算力工廠]
+    subgraph infra_layer ["基礎設施層 (Infrastructure)"]
+        TF["ToolFactory<br/>三級工具工廠"]
+        MF["ModelFactory<br/>模型與算力工廠"]
     end
 
     AA --> MF
     QA --> MF
     QA --> TF
     MCP --> TF
-    QA --> RAG[QAChain + ReActAgent]
+    QA --> RAG["QAChain + ReActAgent"]
     RAG --> TF
     RAG --> MF
 
-    subgraph 資料與狀態存儲 (Data & State)
-        V[(Vector DB / Milvus)]
-        GM[分層成長記憶<br/>Layered Growth Memory]
-        SM[會話短期記憶<br/>Short-term Memory]
+    subgraph storage_layer ["資料與狀態存儲 (Data & State)"]
+        V[("(Vector DB / Milvus)")]
+        GM["分層成長記憶<br/>Layered Growth Memory"]
+        SM["會話短期記憶<br/>Short-term Memory"]
     end
 
     TF --> V
     QA --> GM
     QA --> SM
 
-    P[原始資料源<br/>Data Sources] -.離線管線.-> D[資料處理管線<br/>Data Pipeline]
+    P["原始資料源<br/>Data Sources"] -.離線管線.-> D["資料處理管線<br/>Data Pipeline"]
     D -.寫入.-> V
 ```
 
