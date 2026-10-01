@@ -9,7 +9,7 @@
 1. **基礎能力高度共享**：基於 `ModelFactory` 與 `ToolFactory` 統一管理推理算力與三級（Domain → Package → Tool）工具生態，支援多端入口（後台、問答、MCP 服務）無縫複用。
 2. **建庫與問答完全解耦**：採用「離線文檔解析/分塊/校驗/入庫」與「線上檢索/生成」雙軌架構，資料源格式（PDF/Web/DB）解耦，支援獨立擴容與迭代。
 3. **長文檔自研解析管線**：內置**滑動窗口分片機制 (Sliding Window Chunking)** 與**跨頁表格合併演算法 (Cross-Page Table Merging)**，突破長文本與複雜表格的上下文限制。
-4. **四層成長型記憶系統 (Layered Growth Memory)**：摒棄傳統流水帳式 Context 堆疊，將用戶認知拆解為**身份畫像 (Identity Profile)**、**穩定語境 (Stable Context)**、**動態語境 (Dynamic Context)** 與 **成長軌跡 (Growth Context)**，實現跨會話認知積累。
+4. **三層動態記憶系統 (Three-Tier Dynamic Memory)**：打破單純依賴流水帳式 Context 堆疊的限制，將用戶認知精簡並拆解為**長期畫像 (Profile)****、工作語境 (State) **與 **歷史軌跡 (Memory)**（共 12 個模組），實現跨會話認知的高效沉澱與增量演進。
 5. **雙重安全防護體系 (Dual-Layer Security)**：
    - **代碼側**：採用 AST 靜態審查 (AST Static Analysis) 與子進程沙箱 (Subprocess Sandbox) 機制。
    - **文本側**：結合正則脫敏 (Regex Anonymization) 與 LLM 語義二次審查 (Semantic Moderation)。
@@ -39,10 +39,10 @@ flowchart TD
     RAG --> TF
     RAG --> MF
 
-    subgraph storage_layer ["資料與狀態存儲 (Data & State)"]
-        V[("(Vector DB / Milvus)")]
-        GM["分層成長記憶<br/>Layered Growth Memory"]
-        SM["會話短期記憶<br/>Short-term Memory"]
+    subgraph storage_layer ["支援系統 (Support Systems)"]
+        V[("(向量知識庫 / Milvus)")]
+        GM["分層成長記憶身份/穩定/動態/成長"]
+        SM["會話內短期記憶"]
     end
 
     TF --> V
@@ -81,7 +81,7 @@ agent_jerry_gao/
 | **檢索與生成鏈路** | `search/` / `generator/` | 混合檢索 (Hybrid Retrieval)、Cross-Encoder 重排與 LLM 客戶端封裝 |
 | **模型與工具底座** | `factory/` | 模型算力調度、三級工具註冊、角色可見性控制 (Role RBAC) |
 | **智能體與安全防護** | `agent/` | ReAct 調度循環、AST 代碼審查、沙箱隔離與合規過濾 |
-| **記憶與上下文** | `memory/` / `memory_growth/` | 短期 Context 維護、原子化 I/O 落盤與四層成長記憶渲染 |
+| **記憶與上下文** | memory/ / memory_growth/ | 短期 Context 維護、實體上下文、原子落盤與三層動態記憶演進 |
 
 ---
 
@@ -123,10 +123,11 @@ python eval/run_all_eval.py
 ### 4. 跨會話成長記憶構建
 
 ```bash
-# 從會話歷史抽取事實並構建四層結構化 Prompt
-python memory_growth/1_extractor.py
-python memory_growth/2_layer_mapper.py
-python memory_growth/3_context_builder.py
+# 推薦：一鍵運行完整流水線（增量演進）
+python memory_growth/app.py --user admin
+
+# 全量重洗：重新抽取全部对话并从零构建语境
+python memory_growth/app.py --user admin --full-run
 ```
 
 ---
