@@ -20,17 +20,16 @@ Growlong 是一套模組化智能問答系統，核心架構聚焦於**分層模
 
 ## 二、 系統整體架構
 
-```
 flowchart TD
     subgraph entry_layer ["入口層 (Entry Layer)"]
-        AA["App Admin知識庫建設後台"]
-        QA["QA Admin問答系統後台"]
-        MCP["MCP ServerMCP 工具服務"]
+        AA["App Admin<br/>知識庫建設後台"]
+        QA["QA Admin<br/>問答系統後台"]
+        MCP["MCP Server<br/>MCP 工具服務"]
     end
 
     subgraph infra_layer ["基礎設施層 (Infrastructure)"]
-        TF["ToolFactory三級工具工廠"]
-        MF["ModelFactory模型與算力工廠"]
+        TF["ToolFactory<br/>三級工具工廠"]
+        MF["ModelFactory<br/>模型與算力工廠"]
     end
 
     AA --> MF
@@ -51,9 +50,8 @@ flowchart TD
     QA --> GM
     QA --> SM
 
-    P["原始資料源Data Sources"] -.離線管線.-> D["資料處理管線Data Pipeline"]
+    P["原始資料源<br/>Data Sources"] -.離線管線.-> D["資料處理管線<br/>Data Pipeline"]
     D -.寫入.-> V
-```
 
 * * *
 
