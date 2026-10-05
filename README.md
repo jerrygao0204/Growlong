@@ -6,15 +6,40 @@ Growlong 是一套模組化智能問答系統，核心架構聚焦於**分層模
 
 ## 一、 核心架構優勢
 
-1.  **基礎能力高度共享**：基於 `ModelFactory` 與 `ToolFactory` 統一管理推理算力與三級（Domain → Package → Tool）工具生態，支援多端入口（後台、問答、MCP 服務）無縫複用。
-2.  **建庫與問答完全解耦**：採用「離線文檔解析/分塊/校驗/入庫」與「線上檢索/生成」雙軌架構，資料源格式（PDF/Web/DB）解耦，支援獨立擴容與迭代。
-3.  **長文檔自研解析管線**：內置**滑動窗口分片機制 (Sliding Window Chunking)** 與**跨頁表格合併演算法 (Cross-Page Table Merging)**，突破長文本與複雜表格的上下文限制。
-4.  **工具選擇專用模型加固 (Router Model)**：支援將 **Domain/Package 路由與主回答模型解耦**。可透過專門微調的 SFT 路由模型（如 `qwen3-8b-qlra-awq-4bit`）專職工具選擇，大幅降低誤選風險並提供完整的 JSONL 路由審計日誌。
-5.  **內置 SFT 模型蒸餾與微調流水線**：提供完整的 `SFT/` 訓練與檢測模組，支援訓練數據構建、LoRA/QLoRA 微調訓練、自動化檢查點盲測與量化測試，產出模型可無縫接入 LiteLLM。
-6.  **三層動態記憶系統 (Three-Tier Dynamic Memory)**：打破單純依賴流水帳式 Context 堆疊的限制，將用戶認知精簡並拆解為**長期畫像 (Profile)**、**工作語境 (State)** 與 **歷史軌跡 (Memory)**（共 12 個模組），實現跨會話認知的高效沉澱與增量演進。
-7.  **雙重安全防護體系 (Dual-Layer Security)**：
-    +   **代碼側**：採用 AST 靜態審查 (AST Static Analysis) 與子進程沙箱 (Subprocess Sandbox) 機制。
-    +   **文本側**：結合正則脫敏 (Regex Anonymization) 與 LLM 語義二次審查 (Semantic Moderation)。
+```
+flowchart TD
+    subgraph entry_layer ["入口層 (Entry Layer)"]
+        AA["App Admin知識庫建設後台"]
+        QA["QA Admin問答系統後台"]
+        MCP["MCP ServerMCP 工具服務"]
+    end
+
+    subgraph infra_layer ["基礎設施層 (Infrastructure)"]
+        TF["ToolFactory三級工具工廠"]
+        MF["ModelFactory模型與算力工廠"]
+    end
+
+    AA --> MF
+    QA --> MF
+    QA --> TF
+    MCP --> TF
+    QA --> RAG["QAChain + ReActAgent"]
+    RAG --> TF
+    RAG --> MF
+
+    subgraph storage_layer ["支援系統 (Support Systems)"]
+        V[("(向量知識庫 / Milvus)")]
+        GM["分層成長記憶身份/穩定/動態/成長"]
+        SM["會話內短期記憶"]
+    end
+
+    TF --> V
+    QA --> GM
+    QA --> SM
+
+    P["原始資料源Data Sources"] -.離線管線.-> D["資料處理管線Data Pipeline"]
+    D -.寫入.-> V
+```
 
 * * *
 
