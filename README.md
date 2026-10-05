@@ -6,7 +6,7 @@ Growlong 是一套模組化智能問答系統，核心架構聚焦於**分層模
 
 ## 一、 核心架構優勢
 
-```
+```mermaid
 flowchart TD
     subgraph entry_layer ["入口層 (Entry Layer)"]
         AA["App Admin知識庫建設後台"]
