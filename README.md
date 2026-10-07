@@ -4,46 +4,7 @@ Growlong 是一套模組化智能問答系統，核心架構聚焦於**分層模
 
 * * *
 
-## 一、 核心架構優勢
-
-```mermaid
-flowchart TD
-    subgraph entry_layer ["入口層 (Entry Layer)"]
-        AA["App Admin知識庫建設後台"]
-        QA["QA Admin問答系統後台"]
-        MCP["MCP ServerMCP 工具服務"]
-    end
-
-    subgraph infra_layer ["基礎設施層 (Infrastructure)"]
-        TF["ToolFactory三級工具工廠"]
-        MF["ModelFactory模型與算力工廠"]
-    end
-
-    AA --> MF
-    QA --> MF
-    QA --> TF
-    MCP --> TF
-    QA --> RAG["QAChain + ReActAgent"]
-    RAG --> TF
-    RAG --> MF
-
-    subgraph storage_layer ["支援系統 (Support Systems)"]
-        V[("(向量知識庫 / Milvus)")]
-        GM["分層成長記憶身份/穩定/動態/成長"]
-        SM["會話內短期記憶"]
-    end
-
-    TF --> V
-    QA --> GM
-    QA --> SM
-
-    P["原始資料源Data Sources"] -.離線管線.-> D["資料處理管線Data Pipeline"]
-    D -.寫入.-> V
-```
-
-* * *
-
-## 二、 系統整體架構
+## 一、 系統整體架構
 
 ```mermaid
 flowchart TD
@@ -81,7 +42,7 @@ flowchart TD
 ```
 * * *
 
-## 三、 專案目錄結構與模組對照
+## 二、 專案目錄結構與模組對照
 
 ```
 agent_jerry_gao/
@@ -113,7 +74,7 @@ agent_jerry_gao/
 
 * * *
 
-## 四、 快速開始與使用指南
+## 三、 快速開始與使用指南
 
 ### 1\. 環境準備與服務啟動
 
@@ -172,7 +133,7 @@ python eval/run_all_eval.py
 
 * * *
 
-## 五、 質量防護與技術演進說明
+## 四、 質量防護與技術演進說明
 
 +   **併發與原子化保障**：文件級操作引入 `atomic_io.py`（進程鎖 + 原子替換），防止多線程/多進程寫入導致的資料損壞。
 +   **併發擴展機制**：`FeedbackStore` 當前使用 `threading.Lock` 保護單進程線程安全；多 Worker 部署時可無縫擴展為 `filelock.FileLock`。
