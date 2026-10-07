@@ -45,6 +45,7 @@ flowchart TD
 
 ## 二、 系統整體架構
 
+```mermaid
 flowchart TD
     subgraph entry_layer ["入口層 (Entry Layer)"]
         AA["App Admin<br/>知識庫建設後台"]
@@ -77,7 +78,7 @@ flowchart TD
 
     P["原始資料源<br/>Data Sources"] -.離線管線.-> D["資料處理管線<br/>Data Pipeline"]
     D -.寫入.-> V
-
+```
 * * *
 
 ## 三、 專案目錄結構與模組對照
